@@ -19,6 +19,6 @@ spec:
     spec:
       containers:
         - name: client
-          image: akashhulke/client:8ee54d408f5520377a744502318e5a94b0bd210f
+          image: akashhulke/client:40ae81ccdb80d841c8db6a7bd2423fec11dbfba7
           ports:
             - containerPort: 3000
