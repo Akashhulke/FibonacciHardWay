@@ -41,11 +41,8 @@ jobs:
           ls -la worker || echo "worker folder not present"
           ls -la nginx
 
-      - name: Debug directory
-        working-directory: ./FibonacciHardWay/client
-        run: |
-          pwd
-          ls -la
+      - name: List repo root
+        run: ls -la
 
       # -----------------------------
       # Build Docker Images
