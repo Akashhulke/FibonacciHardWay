@@ -19,4 +19,4 @@ spec:
     spec:
       containers:
         - name: worker
-          image: akashhulke/worker:ba2a0458685391c10b6183721c2ac105bcca524b
+          image: akashhulke/worker:2ef9ad6d14e84adf977c3029f2fb9b5fe68fdd6c
