@@ -5,8 +5,9 @@ on:
     branches:
       - main
       - master
+
     paths-ignore:
-      - 'k8s/deployment.yaml'
+      - 'k8s/**'
 
 permissions:
   contents: write
@@ -19,23 +20,87 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
+      # -----------------------------
+      # Docker Login
+      # -----------------------------
       - name: Docker Login
         run: echo "${{ secrets.DOCKER_PASSWORD }}" | docker login -u "${{ secrets.DOCKER_USERNAME }}" --password-stdin
 
-      - name: Build Image
-        run: docker build -t ${{ secrets.DOCKER_USERNAME }}/frontendprod:${{ github.sha }} .
-
-      - name: Push Image
-        run: docker push ${{ secrets.DOCKER_USERNAME }}/frontendprod:${{ github.sha }}
-
-      - name: Update Kubernetes manifest
+      # -----------------------------
+      # Build Images
+      # -----------------------------
+      - name: Build Client Image
         run: |
-          sed -i 's|image:.*|image: ${{ secrets.DOCKER_USERNAME }}/frontendprod:${{ github.sha }}|' k8s/deployment.yaml
+          docker build \
+          -t ${{ secrets.DOCKER_USERNAME }}/client:${{ github.sha }} \
+          -f ./client/Dockerfile \
+          ./client
 
-      - name: Commit changes
+      - name: Build Server Image
+        run: |
+          docker build \
+          -t ${{ secrets.DOCKER_USERNAME }}/server:${{ github.sha }} \
+          -f ./server/Dockerfile \
+          ./server
+
+      - name: Build Worker Image
+        run: |
+          docker build \
+          -t ${{ secrets.DOCKER_USERNAME }}/worker:${{ github.sha }} \
+          -f ./worker/Dockerfile \
+          ./worker
+
+      - name: Build Nginx Image
+        run: |
+          docker build \
+          -t ${{ secrets.DOCKER_USERNAME }}/nginx:${{ github.sha }} \
+          -f ./nginx/Dockerfile \
+          ./nginx
+
+      # -----------------------------
+      # Push Images
+      # -----------------------------
+      - name: Push Client Image
+        run: docker push ${{ secrets.DOCKER_USERNAME }}/client:${{ github.sha }}
+
+      - name: Push Server Image
+        run: docker push ${{ secrets.DOCKER_USERNAME }}/server:${{ github.sha }}
+
+      - name: Push Worker Image
+        run: docker push ${{ secrets.DOCKER_USERNAME }}/worker:${{ github.sha }}
+
+      - name: Push Nginx Image
+        run: docker push ${{ secrets.DOCKER_USERNAME }}/nginx:${{ github.sha }}
+
+      # -----------------------------
+      # Update Kubernetes YAML Files
+      # -----------------------------
+      - name: Update Client Deployment
+        run: |
+          sed -i 's|image:.*client.*|image: ${{ secrets.DOCKER_USERNAME }}/client:${{ github.sha }}|' k8s/client-deployment.yaml
+
+      - name: Update Server Deployment
+        run: |
+          sed -i 's|image:.*server.*|image: ${{ secrets.DOCKER_USERNAME }}/server:${{ github.sha }}|' k8s/server-deployment.yaml
+
+      - name: Update Worker Deployment
+        run: |
+          sed -i 's|image:.*worker.*|image: ${{ secrets.DOCKER_USERNAME }}/worker:${{ github.sha }}|' k8s/worker-deployment.yaml
+
+      - name: Update Nginx Deployment
+        run: |
+          sed -i 's|image:.*nginx.*|image: ${{ secrets.DOCKER_USERNAME }}/nginx:${{ github.sha }}|' k8s/nginx-deployment.yaml
+
+      # -----------------------------
+      # Commit Updated YAMLs
+      # -----------------------------
+      - name: Commit Updated Deployment Files
         run: |
           git config --global user.email "github-actions@github.com"
           git config --global user.name "github-actions"
-          git add k8s/deployment.yaml
-          git commit -m "Update image to ${{ github.sha }}" || echo "No changes to commit"
+
+          git add k8s/
+
+          git commit -m "Update image tags to ${{ github.sha }}" || echo "No changes to commit"
+
           git push
