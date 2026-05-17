@@ -23,7 +23,6 @@ jobs:
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
-          path: ./FibonacciHardWay
 
       # -----------------------------
       # Docker Login
@@ -42,23 +41,29 @@ jobs:
           ls -la worker || echo "worker folder not present"
           ls -la nginx
 
+      - name: Debug directory
+        working-directory: ./FibonacciHardWay/client
+        run: |
+          pwd
+          ls -la
+
       # -----------------------------
       # Build Docker Images
       # -----------------------------
       - name: Build Client Image
-        working-directory: ./FibonacciHardWay/client
+        working-directory: client
         run: docker build -t ${{ secrets.DOCKER_USERNAME }}/client:${{ github.sha }} -f Dockerfile .
 
       - name: Build Server Image
-        working-directory: ./FibonacciHardWay/server
+        working-directory: server
         run: docker build -t ${{ secrets.DOCKER_USERNAME }}/server:${{ github.sha }} -f Dockerfile .
 
       - name: Build Worker Image
-        working-directory: ./FibonacciHardWay/worker
+        working-directory: worker
         run: docker build -t ${{ secrets.DOCKER_USERNAME }}/worker:${{ github.sha }} -f Dockerfile .
 
       - name: Build Nginx Image
-        working-directory: ./FibonacciHardWay/nginx
+        working-directory: nginx
         run: docker build -t ${{ secrets.DOCKER_USERNAME }}/nginx:${{ github.sha }} -f Dockerfile .
 
       # -----------------------------
