@@ -38,32 +38,16 @@ jobs:
       # Build Images
       # -----------------------------
       - name: Build Client Image
-        run: |
-          docker build \
-          -t ${{ secrets.DOCKER_USERNAME }}/client:${{ github.sha }} \
-          -f ./client/Dockerfile \
-          .
+        run: docker build -t ${{ secrets.DOCKER_USERNAME }}/client:${{ github.sha }} -f client/Dockerfile client
 
       - name: Build Server Image
-        run: |
-          docker build \
-          -t ${{ secrets.DOCKER_USERNAME }}/server:${{ github.sha }} \
-          -f ./server/Dockerfile \
-          .
+        run: docker build -t ${{ secrets.DOCKER_USERNAME }}/server:${{ github.sha }} -f server/Dockerfile server
 
       - name: Build Worker Image
-        run: |
-          docker build \
-          -t ${{ secrets.DOCKER_USERNAME }}/worker:${{ github.sha }} \
-          -f ./worker/Dockerfile \
-          .
+        run: docker build -t ${{ secrets.DOCKER_USERNAME }}/worker:${{ github.sha }} -f worker/Dockerfile worker
 
       - name: Build Nginx Image
-        run: |
-          docker build \
-          -t ${{ secrets.DOCKER_USERNAME }}/nginx:${{ github.sha }} \
-          -f ./nginx/Dockerfile \
-          .
+        run: docker build -t ${{ secrets.DOCKER_USERNAME }}/nginx:${{ github.sha }} -f nginx/Dockerfile nginx
 
       # -----------------------------
       # Push Images
