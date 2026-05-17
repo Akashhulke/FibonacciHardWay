@@ -30,24 +30,24 @@ jobs:
 
       - name: Verify Dockerfiles
         run: |
-          ls -la FibonacciHardWay/client
-          ls -la FibonacciHardWay/server
-          ls -la FibonacciHardWay/worker
-          ls -la FibonacciHardWay/nginx
+          ls -la client
+          ls -la server
+          ls -la worker
+          ls -la nginx
       # -----------------------------
       # Build Images
       # -----------------------------
       - name: Build Client Image
-        run: docker build -t ${{ secrets.DOCKER_USERNAME }}/client:${{ github.sha }} -f FibonacciHardWay/client/Dockerfile FibonacciHardWay/client
+        run: docker build -t ${{ secrets.DOCKER_USERNAME }}/client:${{ github.sha }} -f client/Dockerfile client
 
       - name: Build Server Image
-        run: docker build -t ${{ secrets.DOCKER_USERNAME }}/server:${{ github.sha }} -f FibonacciHardWay/server/Dockerfile FibonacciHardWay/server
+        run: docker build -t ${{ secrets.DOCKER_USERNAME }}/server:${{ github.sha }} -f server/Dockerfile server
 
       - name: Build Worker Image
-        run: docker build -t ${{ secrets.DOCKER_USERNAME }}/worker:${{ github.sha }} -f FibonacciHardWay/worker/Dockerfile FibonacciHardWay/worker
+        run: docker build -t ${{ secrets.DOCKER_USERNAME }}/worker:${{ github.sha }} -f worker/Dockerfile worker
 
       - name: Build Nginx Image
-        run: docker build -t ${{ secrets.DOCKER_USERNAME }}/nginx:${{ github.sha }} -f FibonacciHardWay/nginx/Dockerfile FibonacciHardWay/nginx
+        run: docker build -t ${{ secrets.DOCKER_USERNAME }}/nginx:${{ github.sha }} -f nginx/Dockerfile nginx
 
       # -----------------------------
       # Push Images
@@ -69,19 +69,19 @@ jobs:
       # -----------------------------
       - name: Update Client Deployment
         run: |
-          sed -i 's|image:.*client.*|image: ${{ secrets.DOCKER_USERNAME }}/client:${{ github.sha }}|' FibonacciHardWay/k8s/client-deployment.yaml
+          sed -i 's|image:.*client.*|image: ${{ secrets.DOCKER_USERNAME }}/client:${{ github.sha }}|' k8s/client-deployment.yaml
 
       - name: Update Server Deployment
         run: |
-          sed -i 's|image:.*server.*|image: ${{ secrets.DOCKER_USERNAME }}/server:${{ github.sha }}|' FibonacciHardWay/k8s/server-deployment.yaml
+          sed -i 's|image:.*server.*|image: ${{ secrets.DOCKER_USERNAME }}/server:${{ github.sha }}|' k8s/server-deployment.yaml
 
       - name: Update Worker Deployment
         run: |
-          sed -i 's|image:.*worker.*|image: ${{ secrets.DOCKER_USERNAME }}/worker:${{ github.sha }}|' FibonacciHardWay/k8s/worker-deployment.yaml
+          sed -i 's|image:.*worker.*|image: ${{ secrets.DOCKER_USERNAME }}/worker:${{ github.sha }}|' k8s/worker-deployment.yaml
 
       - name: Update Nginx Deployment
         run: |
-          sed -i 's|image:.*nginx.*|image: ${{ secrets.DOCKER_USERNAME }}/nginx:${{ github.sha }}|' FibonacciHardWay/k8s/nginx-deployment.yaml
+          sed -i 's|image:.*nginx.*|image: ${{ secrets.DOCKER_USERNAME }}/nginx:${{ github.sha }}|' k8s/nginx-deployment.yaml
 
       # -----------------------------
       # Commit Updated YAMLs
@@ -91,7 +91,7 @@ jobs:
           git config --global user.email "github-actions@github.com"
           git config --global user.name "github-actions"
 
-          git add FibonacciHardWay/k8s/
+          git add k8s/
 
           git commit -m "Update image tags to ${{ github.sha }}" || echo "No changes to commit"
 
