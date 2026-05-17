@@ -19,7 +19,7 @@ spec:
     spec:
       containers:
         - name: api
-          image: akashhulke/api:40ae81ccdb80d841c8db6a7bd2423fec11dbfba7
+          image: akashhulke/api:ba2a0458685391c10b6183721c2ac105bcca524b
 
           ports:
             - containerPort: 5000
