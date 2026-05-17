@@ -19,6 +19,8 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
 
       # -----------------------------
       # Docker Login
@@ -103,4 +105,4 @@ jobs:
 
           git commit -m "Update image tags to ${{ github.sha }}" || echo "No changes to commit"
 
-          git push
+          git push origin HEAD:${{ github.ref_name }}
