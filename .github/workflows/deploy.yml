@@ -56,7 +56,7 @@ jobs:
         run: docker build -t ${{ secrets.DOCKER_USERNAME }}/client:${{ github.sha }} -f ./client/Dockerfile ./client
 
       - name: Build Server Image
-        run: docker build -t ${{ secrets.DOCKER_USERNAME }}/server:${{ github.sha }} -f ./server/Dockerfile ./server
+        run: docker build -t ${{ secrets.DOCKER_USERNAME }}/api:${{ github.sha }} -f ./server/Dockerfile ./server
 
       - name: Build Worker Image
         run: docker build -t ${{ secrets.DOCKER_USERNAME }}/worker:${{ github.sha }} -f ./worker/Dockerfile ./worker
@@ -71,7 +71,7 @@ jobs:
         run: docker push ${{ secrets.DOCKER_USERNAME }}/client:${{ github.sha }}
 
       - name: Push Server Image
-        run: docker push ${{ secrets.DOCKER_USERNAME }}/server:${{ github.sha }}
+        run: docker push ${{ secrets.DOCKER_USERNAME }}/api:${{ github.sha }}
 
       - name: Push Worker Image
         run: docker push ${{ secrets.DOCKER_USERNAME }}/worker:${{ github.sha }}
@@ -88,7 +88,7 @@ jobs:
 
       - name: Update Server Deployment
         run: |
-          sed -i 's|image:.*server.*|image: ${{ secrets.DOCKER_USERNAME }}/server:${{ github.sha }}|' k8s/api-deployment.yaml
+          sed -i 's|image:.*api.*|image: ${{ secrets.DOCKER_USERNAME }}/api:${{ github.sha }}|' k8s/api-deployment.yaml
 
       - name: Update Worker Deployment
         run: |
