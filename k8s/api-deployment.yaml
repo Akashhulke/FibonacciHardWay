@@ -19,7 +19,7 @@ spec:
     spec:
       containers:
         - name: api
-          image: akashhulke/api:${{ github.sha }}
+          image: akashhulke/api:8ee54d408f5520377a744502318e5a94b0bd210f
 
           ports:
             - containerPort: 5000
