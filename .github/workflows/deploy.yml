@@ -30,6 +30,7 @@ jobs:
         run: echo "${{ secrets.DOCKER_PASSWORD }}" | docker login -u "${{ secrets.DOCKER_USERNAME }}" --password-stdin
 
       - name: Verify Dockerfiles
+        working-directory: ./FibonacciHardWay
         run: |
           ls -la client
           ls -la server
@@ -39,15 +40,19 @@ jobs:
       # Build Images
       # -----------------------------
       - name: Build Client Image
+        working-directory: ./FibonacciHardWay
         run: docker build -t ${{ secrets.DOCKER_USERNAME }}/client:${{ github.sha }} -f client/Dockerfile client
 
       - name: Build Server Image
+        working-directory: ./FibonacciHardWay
         run: docker build -t ${{ secrets.DOCKER_USERNAME }}/server:${{ github.sha }} -f server/Dockerfile server
 
       - name: Build Worker Image
+        working-directory: ./FibonacciHardWay
         run: docker build -t ${{ secrets.DOCKER_USERNAME }}/worker:${{ github.sha }} -f worker/Dockerfile worker
 
       - name: Build Nginx Image
+        working-directory: ./FibonacciHardWay
         run: docker build -t ${{ secrets.DOCKER_USERNAME }}/nginx:${{ github.sha }} -f nginx/Dockerfile nginx
 
       # -----------------------------
@@ -69,18 +74,22 @@ jobs:
       # Update Kubernetes YAML Files
       # -----------------------------
       - name: Update Client Deployment
+        working-directory: ./FibonacciHardWay
         run: |
           sed -i 's|image:.*client.*|image: ${{ secrets.DOCKER_USERNAME }}/client:${{ github.sha }}|' k8s/client-deployment.yaml
 
       - name: Update Server Deployment
+        working-directory: ./FibonacciHardWay
         run: |
           sed -i 's|image:.*server.*|image: ${{ secrets.DOCKER_USERNAME }}/server:${{ github.sha }}|' k8s/server-deployment.yaml
 
       - name: Update Worker Deployment
+        working-directory: ./FibonacciHardWay
         run: |
           sed -i 's|image:.*worker.*|image: ${{ secrets.DOCKER_USERNAME }}/worker:${{ github.sha }}|' k8s/worker-deployment.yaml
 
       - name: Update Nginx Deployment
+        working-directory: ./FibonacciHardWay
         run: |
           sed -i 's|image:.*nginx.*|image: ${{ secrets.DOCKER_USERNAME }}/nginx:${{ github.sha }}|' k8s/nginx-deployment.yaml
 
@@ -88,6 +97,7 @@ jobs:
       # Commit Updated YAMLs
       # -----------------------------
       - name: Commit Updated Deployment Files
+        working-directory: ./FibonacciHardWay
         run: |
           git config --global user.email "github-actions@github.com"
           git config --global user.name "github-actions"
