@@ -28,10 +28,12 @@ jobs:
       - name: Docker Login
         run: echo "${{ secrets.DOCKER_PASSWORD }}" | docker login -u "${{ secrets.DOCKER_USERNAME }}" --password-stdin
 
-      - name: Debug Repository Structure
+      - name: Verify Dockerfiles
         run: |
-          pwd
-          ls -R
+          ls -la client
+          ls -la server
+          ls -la worker
+          ls -la nginx
       # -----------------------------
       # Build Images
       # -----------------------------
@@ -40,28 +42,28 @@ jobs:
           docker build \
           -t ${{ secrets.DOCKER_USERNAME }}/client:${{ github.sha }} \
           -f ./client/Dockerfile \
-          ./client
+          .
 
       - name: Build Server Image
         run: |
           docker build \
           -t ${{ secrets.DOCKER_USERNAME }}/server:${{ github.sha }} \
           -f ./server/Dockerfile \
-          ./server
+          .
 
       - name: Build Worker Image
         run: |
           docker build \
           -t ${{ secrets.DOCKER_USERNAME }}/worker:${{ github.sha }} \
           -f ./worker/Dockerfile \
-          ./worker
+          .
 
       - name: Build Nginx Image
         run: |
           docker build \
           -t ${{ secrets.DOCKER_USERNAME }}/nginx:${{ github.sha }} \
           -f ./nginx/Dockerfile \
-          ./nginx
+          .
 
       # -----------------------------
       # Push Images
