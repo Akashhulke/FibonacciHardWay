@@ -23,3 +23,24 @@ spec:
 
           ports:
             - containerPort: 5000
+          env:
+           - name: PGHOST
+             value: postgres-service
+
+           - name: PGUSER
+             value: postgres
+
+           - name: PGDATABASE
+             value: fibvalues
+
+           - name: PGPASSWORD
+             value: postgrespassword
+
+           - name: PGPORT
+             value: "5432"
+
+           - name: REDIS_HOST
+             value: redis-service
+
+           - name: REDIS_PORT
+             value: "6379"
