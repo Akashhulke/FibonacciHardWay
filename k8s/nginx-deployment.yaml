@@ -19,7 +19,7 @@ spec:
     spec:
       containers:
         - name: nginx
-          image: akashhulke/nginx:2efa79e8aa8cbb1bb1c139aa738be9c78c910d54
+          image: akashhulke/nginx:c2a1b99d256586e629b5a48b37028802f3571e49
 
           ports:
             - containerPort: 80
